@@ -19,5 +19,6 @@ Para iniciar el proyecto es necesario tener instalado [Composer](https://getcomp
 5. Insertar el código `php artisan key:generate` para generar la llave en el proyecto laravel.
 6. Insertar el código `php artisan migrate --seed` para cargar las bases de datos incluyendo los seeds.
 7. Correr el proyecto laravel `php artisan serve`.
+8. Ir a la dirección  `http://localhost:8000/` en el navegador.
 
 Cualquier duda comunicarse al 319 711 3358, enviar un correo a jdiaz2108@hotmail.com o enviar un [whatsapp](https://api.whatsapp.com/send?phone=573197113358).

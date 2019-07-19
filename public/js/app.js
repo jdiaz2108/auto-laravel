@@ -1733,6 +1733,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1740,20 +1744,72 @@ __webpack_require__.r(__webpack_exports__);
       registerForm: {
         name: '',
         lastName: '',
-        id: '',
+        document: '',
         cellphone: '',
         mail: '',
         password: '',
         password_confirmation: '',
         department: '',
         city: ''
-      }
+      },
+      departments: [],
+      cities: []
     };
   },
-  mounted: function mounted() {//
+  mounted: function mounted() {
+    this.getDepartments();
+  },
+  watch: {
+    'registerForm.document': function registerFormDocument() {
+      this.validateNumber(this.registerForm.document, 'document');
+    },
+    'registerForm.cellphone': function registerFormCellphone() {
+      this.validateNumber(this.registerForm.cellphone, 'cellphone');
+    }
   },
   methods: {
-    setFocus: function setFocus() {//
+    validateNumber: function validateNumber(param, state) {
+      var number = null;
+
+      if (param != null) {
+        param.length > 14 ? number = parseInt(param.substr(0, 14)) : number = parseInt(param);
+        isNaN(param) ? number = null : '';
+      }
+
+      if (state == 'document') {
+        this.registerForm.document = number;
+      } else if (state == 'cellphone') {
+        this.registerForm.cellphone = number;
+      }
+    },
+    getDepartments: function getDepartments() {
+      var _this = this;
+
+      axios.get('/api/getDepartments').then(function (response) {
+        _this.departments = response.data;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    getCity: function getCity() {
+      var _this2 = this;
+
+      axios.get('/api/getCity/' + this.registerForm.department).then(function (response) {
+        _this2.registerForm.city = '';
+        _this2.cities = response.data;
+        console.log(response);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    setFocus: function setFocus() {
+      var _this3 = this;
+
+      axios.get('/api/getDepartments').then(function (response) {
+        _this3.departments = response.data;
+      })["catch"](function (error) {
+        console.log(error);
+      });
     }
   }
 });
@@ -37070,11 +37126,6 @@ var render = function() {
         },
         [
           _c("form", { staticClass: "form-wrap", attrs: { action: "" } }, [
-            _vm._v(
-              "\n        " +
-                _vm._s(_vm.registerForm.password_confirmation) +
-                "\n\n                                    "
-            ),
             _c("input", {
               directives: [
                 {
@@ -37131,20 +37182,20 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.registerForm.id,
-                  expression: "registerForm.id"
+                  value: _vm.registerForm.document,
+                  expression: "registerForm.document"
                 }
               ],
-              ref: "id",
+              ref: "document",
               staticClass: "form-control",
-              attrs: { type: "tel", placeholder: "Cedula", required: "" },
-              domProps: { value: _vm.registerForm.id },
+              attrs: { type: "telphone", placeholder: "Cedula", required: "" },
+              domProps: { value: _vm.registerForm.document },
               on: {
                 input: function($event) {
                   if ($event.target.composing) {
                     return
                   }
-                  _vm.$set(_vm.registerForm, "id", $event.target.value)
+                  _vm.$set(_vm.registerForm, "document", $event.target.value)
                 }
               }
             }),
@@ -37160,7 +37211,7 @@ var render = function() {
               ],
               ref: "cellphone",
               staticClass: "form-control",
-              attrs: { type: "tel", placeholder: "Celular", required: "" },
+              attrs: { type: "telphone", placeholder: "Celular", required: "" },
               domProps: { value: _vm.registerForm.cellphone },
               on: {
                 input: function($event) {
@@ -37184,7 +37235,7 @@ var render = function() {
               ref: "mail",
               staticClass: "form-control",
               attrs: {
-                type: "text",
+                type: "email",
                 placeholder: "Correo Electrónico",
                 required: ""
               },
@@ -37257,84 +37308,129 @@ var render = function() {
               }
             }),
             _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.registerForm.department,
-                  expression: "registerForm.department"
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.registerForm.department,
+                    expression: "registerForm.department"
+                  }
+                ],
+                ref: "department",
+                staticClass: "form-control",
+                attrs: { required: "" },
+                on: {
+                  change: [
+                    function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.registerForm,
+                        "department",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    },
+                    function($event) {
+                      return _vm.getCity()
+                    }
+                  ]
                 }
-              ],
-              ref: "department",
-              staticClass: "form-control",
-              attrs: {
-                type: "text",
-                placeholder: "Departamento",
-                required: ""
               },
-              domProps: { value: _vm.registerForm.department },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.registerForm, "department", $event.target.value)
-                }
-              }
-            }),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.registerForm.city,
-                  expression: "registerForm.city"
-                }
+              [
+                _c(
+                  "option",
+                  { attrs: { value: "", disabled: "", selected: "" } },
+                  [_vm._v("Seleccione un Departamento...")]
+                ),
+                _vm._v(" "),
+                _vm._l(_vm.departments, function(department, index) {
+                  return _c(
+                    "option",
+                    {
+                      key: index,
+                      staticClass: "text-capitalize",
+                      domProps: { value: department.id }
+                    },
+                    [_vm._v(_vm._s(department.name))]
+                  )
+                })
               ],
-              ref: "city",
-              staticClass: "form-control",
-              attrs: { type: "text", placeholder: "Ciudad", required: "" },
-              domProps: { value: _vm.registerForm.city },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.registerForm, "city", $event.target.value)
-                }
-              }
-            }),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.registerForm.name,
-                  expression: "registerForm.name"
-                }
-              ],
-              ref: "name",
-              staticClass: "form-control",
-              attrs: { type: "text", placeholder: "From", required: "" },
-              domProps: { value: _vm.registerForm.name },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.registerForm, "name", $event.target.value)
-                }
-              }
-            }),
+              2
+            ),
             _vm._v(" "),
             _c(
-              "a",
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.registerForm.city,
+                    expression: "registerForm.city"
+                  }
+                ],
+                ref: "city",
+                staticClass: "form-control",
+                attrs: { required: "" },
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.$set(
+                      _vm.registerForm,
+                      "city",
+                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                    )
+                  }
+                }
+              },
+              [
+                _c(
+                  "option",
+                  { attrs: { value: "", disabled: "", selected: "" } },
+                  [_vm._v("Seleccione una Ciudad...")]
+                ),
+                _vm._v(" "),
+                _vm._l(_vm.cities, function(city, index) {
+                  return _c(
+                    "option",
+                    {
+                      key: index,
+                      staticClass: "text-capitalize",
+                      domProps: { value: city.id }
+                    },
+                    [_vm._v(_vm._s(city.name))]
+                  )
+                })
+              ],
+              2
+            ),
+            _vm._v(" "),
+            _vm._m(1),
+            _vm._v(" "),
+            _c(
+              "button",
               {
                 staticClass: "primary-btn text-uppercase",
-                attrs: { href: "#" }
+                attrs: { href: "#" },
+                on: { click: _vm.setFocus }
               },
               [_vm._v("REGISTRARME")]
             )
@@ -37372,6 +37468,30 @@ var staticRenderFns = [
         ])
       ]
     )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-check mb-2 mx-2" }, [
+      _c("input", {
+        staticClass: "form-check-input",
+        attrs: { type: "checkbox", id: "abeasdata", required: "" }
+      }),
+      _vm._v(" "),
+      _c(
+        "label",
+        {
+          staticClass: "form-check-label text-justify",
+          attrs: { for: "abeasdata" }
+        },
+        [
+          _vm._v(
+            "\n                                            Autorizo el tratamiento de mis datos de acuerdo con la finalidad establecida en la política de protección de\n                                            datos personales.\n                                        "
+          )
+        ]
+      )
+    ])
   }
 ]
 render._withStripped = true
@@ -49699,8 +49819,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! F:\htdocs\autos\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! F:\htdocs\autos\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\mimi0\Desktop\auto-laravel\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\mimi0\Desktop\auto-laravel\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

@@ -2,19 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     /**
      * Show the application dashboard.
@@ -23,6 +17,18 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $users = User::inRandomOrder()->get();
+        if (count($users) > 4) {
+            $user = $users->first();
+            return view('winner', compact('user'));
+        } else {
+            $user = false;
+            return view('winner', compact('user'));
+        }
+
+    }
+
+    public function export(){
+        return Excel::download(new UsersExport, 'usuarios.xlsx');
     }
 }

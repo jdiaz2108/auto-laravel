@@ -41,9 +41,12 @@
 
 <body>
     <div id="app">
+            @include('layouts.header')
         <main>
             @yield('content')
         </main>
+            @include('layouts.extraContent')
+            @include('layouts.footer')
     </div>
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="js/vendor/jquery-2.2.4.min.js"></script>

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
 class RegisterController extends Controller
@@ -34,7 +36,52 @@ class RegisterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $rules = [
+            'name'     => 'required|string',
+            'lastName' => 'required|string',
+            'email'    => 'required|string|email|unique:users',
+            'password'    => 'required|string|min:6|confirmed',
+            'cellphone' => 'required|numeric|unique:users',
+            'city' => 'required|numeric',
+            'department' => 'required|numeric',
+            'document' => 'required|numeric|unique:users',
+        ];
+
+        $customMessages = [
+            'name.required'     => 'El nombre es requerido',
+            'lastName.required' => 'El apellido es requerido',
+            'email.email'    => 'El correo electrónico no es valido',
+            'email.required'    => 'El correo electrónico es requerido',
+            'email.unique'    =>  'El correo electrónico ya existe',
+            'password.required'    => 'La contraseña es requerida',
+            'password.min'    => 'La contraseña debe contener mínimo 6 caracteres',
+            'password.confirmed'    => 'Las contraseñas no coinciden',
+            'cellphone.required' => 'El celular es requerido',
+            'cellphone.unique' => 'El celular ya existe',
+            'city.required' => 'La ciudad es requerida',
+            'department.required' => 'El departamento es requerido',
+            'document.required' => 'La cédula es requerida',
+            'document.unique' => 'La cédula ya existe',
+        ];
+
+        $this->validate($request, $rules, $customMessages);
+
+        $user = new User([
+            'name'     => $request->name,
+            'lastName' => $request->lastName,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+            'cellphone' => $request->cellphone,
+            'city' => $request->city,
+            'department' => $request->department,
+            'document' => $request->document,
+            'slug' => str_random(18),
+        ]);
+        $user->save();
+       
+            return $user;
+
     }
 
     /**

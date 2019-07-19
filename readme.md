@@ -16,7 +16,8 @@ Para iniciar el proyecto es necesario tener instalado [Composer](https://getcomp
 1. Clonar repositorio remoto `git clone https://github.com/jdiaz2108/auto-laravel.git` o descargarlo en archivo .zip y descomprimir.
 2. Copiar el archivo `.env.example` y renombrar el archivo copiado por `.env`, en ese archivo editar la parte del nombre de la base de datos local `DB_DATABASE=nombre_de_base_datos`, edita el nombre del usuario generalmente llamado root `DB_USERNAME=nombre_usuario_bd_local` y editar la contraseña de la base de datos local `DB_PASSWORD=contraseña_bd_local`.
 3. Ubicarse en la raíz del proyecto e insertar el código `composer update`.
-4. Insertar el código `php artisan migrate --seed` para cargar las bases de datos incluyendo los seeds.
-5. Correr el proyecto laravel `php artisan serve`.
+5. Insertar el código `php artisan key:generate` para generar la llave en el proyecto laravel.
+6. Insertar el código `php artisan migrate --seed` para cargar las bases de datos incluyendo los seeds.
+7. Correr el proyecto laravel `php artisan serve`.
 
 Cualquier duda comunicarse al 319 711 3358, enviar un correo a jdiaz2108@hotmail.com o enviar un [whatsapp](https://api.whatsapp.com/send?phone=573197113358).
